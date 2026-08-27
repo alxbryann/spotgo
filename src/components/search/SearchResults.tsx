@@ -10,6 +10,24 @@ import { formatCurrency } from "@/lib/booking";
 
 type SortOption = "distance" | "price" | "rating";
 
+const MAP_STYLE = {
+  version: 8 as const,
+  sources: {
+    carto: {
+      type: "raster" as const,
+      tiles: [
+        "https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+        "https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+        "https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+        "https://d.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+      ],
+      tileSize: 256,
+      attribution: "© OpenStreetMap contributors © CARTO",
+    },
+  },
+  layers: [{ id: "carto", type: "raster" as const, source: "carto" }],
+};
+
 function distanceLabel(distance: number) {
   return distance < 1000 ? `${Math.round(distance)} m` : `${(distance / 1000).toFixed(1)} km`;
 }
@@ -109,7 +127,7 @@ export default function SearchResults({
                 latitude: destination.lat,
                 zoom: 14,
               }}
-              mapStyle="https://demotiles.maplibre.org/style.json"
+              mapStyle={MAP_STYLE}
               style={{ width: "100%", height: "100%" }}
             >
               <NavigationControl position="top-right" />
