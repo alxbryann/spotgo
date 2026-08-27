@@ -26,10 +26,10 @@ function ReservationCard({ reservation }: { reservation: ReservationWithLot }) {
         <p className="font-mono text-sm font-black tracking-wider text-neutral-500">{reservation.confirmation_code}</p>
       </div>
       <div className="mt-4 grid gap-2 border-y border-neutral-100 py-4 text-sm sm:grid-cols-2">
-        <p><span className="text-neutral-400">Llegada:</span> <strong>{formatDateTime(reservation.start_time)}</strong></p>
-        <p><span className="text-neutral-400">Salida:</span> <strong>{formatDateTime(reservation.end_time)}</strong></p>
-        <p><span className="text-neutral-400">Vehículo:</span> <strong>{VEHICLE_LABELS[reservation.vehicle_type] ?? reservation.vehicle_type} · {reservation.vehicle_plate}</strong></p>
-        <p><span className="text-neutral-400">Total:</span> <strong>{formatCurrency(reservation.total_price)}</strong></p>
+        <p><span className="text-neutral-600">Llegada:</span> <strong className="text-neutral-900">{formatDateTime(reservation.start_time)}</strong></p>
+        <p><span className="text-neutral-600">Salida:</span> <strong className="text-neutral-900">{formatDateTime(reservation.end_time)}</strong></p>
+        <p><span className="text-neutral-600">Vehículo:</span> <strong className="text-neutral-900">{VEHICLE_LABELS[reservation.vehicle_type] ?? reservation.vehicle_type} · {reservation.vehicle_plate}</strong></p>
+        <p><span className="text-neutral-600">Total:</span> <strong className="text-neutral-900">{formatCurrency(reservation.total_price)}</strong></p>
       </div>
       <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start">
         <Link href={`/reserva/${reservation.id}`} className="rounded-xl bg-neutral-900 px-4 py-2.5 text-center text-sm font-bold text-white hover:bg-neutral-700">Ver detalle</Link>
@@ -75,11 +75,11 @@ export default async function ReservationsPage() {
         ) : (
           <div className="mt-8 space-y-10">
             <section>
-              <h2 className="text-xl font-black">Próximas / Activas <span className="text-neutral-400">({upcoming.length})</span></h2>
+              <h2 className="text-xl font-black">Próximas / Activas <span className="text-neutral-500">({upcoming.length})</span></h2>
               <div className="mt-4 space-y-4">{upcoming.length > 0 ? upcoming.map((reservation) => <ReservationCard key={reservation.id} reservation={reservation} />) : <p className="rounded-2xl bg-white p-5 text-neutral-500">No tienes reservas próximas.</p>}</div>
             </section>
             <section>
-              <h2 className="text-xl font-black">Pasadas / Canceladas <span className="text-neutral-400">({past.length})</span></h2>
+              <h2 className="text-xl font-black">Pasadas / Canceladas <span className="text-neutral-500">({past.length})</span></h2>
               <div className="mt-4 space-y-4">{past.map((reservation) => <ReservationCard key={reservation.id} reservation={reservation} />)}</div>
             </section>
           </div>

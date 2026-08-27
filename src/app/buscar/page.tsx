@@ -21,14 +21,28 @@ export default async function SearchPage({
   const address = first(query.address) || BOGOTA.address;
   const { start, end } = parseRange(first(query.start), first(query.end));
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("search_nearby_lots", {
-    p_lat: lat,
-    p_lng: lng,
-    p_radius_m: 5000,
-    p_start: start,
-    p_end: end,
-  });
-  const lots = (data ?? []) as NearbyLot[];
+
+  const RADII_M = [5000, 20000, 20_000_000];
+  let lots: NearbyLot[] = [];
+  let error: { message: string } | null = null;
+  let usedRadius = RADII_M[0];
+  for (const radius of RADII_M) {
+    const res = await supabase.rpc("search_nearby_lots", {
+      p_lat: lat,
+      p_lng: lng,
+      p_radius_m: radius,
+      p_start: start,
+      p_end: end,
+    });
+    if (res.error) {
+      error = res.error;
+      break;
+    }
+    lots = (res.data ?? []) as NearbyLot[];
+    usedRadius = radius;
+    if (lots.length > 0) break;
+  }
+  const isExpanded = lots.length > 0 && usedRadius > RADII_M[0];
 
   return (
     <main className="min-h-screen bg-neutral-50 px-4 py-6 sm:py-8">
@@ -44,7 +58,13 @@ export default async function SearchPage({
             No pudimos cargar los parqueaderos. Intenta de nuevo en unos minutos.
           </div>
         ) : (
-          <SearchResults lots={lots} destination={{ lat, lng, address }} start={start} end={end} />
+          <SearchResults
+            lots={lots}
+            destination={{ lat, lng, address }}
+            start={start}
+            end={end}
+            isExpanded={isExpanded}
+          />
         )}
       </div>
     </main>

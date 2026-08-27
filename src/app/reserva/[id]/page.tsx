@@ -32,7 +32,7 @@ export default async function ReservationPage({ params }: { params: Promise<{ id
             <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-white/20 text-2xl backdrop-blur">{reservation.status === "cancelled" ? "×" : "✓"}</div>
             <p className="mt-4 text-sm font-bold uppercase tracking-[0.2em]">{reservation.status === "cancelled" ? "Reserva cancelada" : "Reserva confirmada"}</p>
             <p className="mt-3 font-mono text-4xl font-black tracking-[0.16em] sm:text-5xl">{reservation.confirmation_code}</p>
-            <p className="mt-3 text-sm text-blue-100">Presenta este código al llegar</p>
+            <p className="mt-3 text-sm text-blue-50">Presenta este código al llegar</p>
           </div>
 
           <div className="p-6 sm:p-8">
@@ -40,10 +40,10 @@ export default async function ReservationPage({ params }: { params: Promise<{ id
             <p className="mt-1 text-neutral-500">{reservation.parking_lots.address}</p>
 
             <div className="mt-6 grid gap-4 rounded-2xl bg-neutral-50 p-5 sm:grid-cols-2">
-              <div><p className="text-xs font-bold uppercase tracking-wider text-neutral-400">Llegada</p><p className="mt-1 font-bold">{formatDateTime(reservation.start_time)}</p></div>
-              <div><p className="text-xs font-bold uppercase tracking-wider text-neutral-400">Salida</p><p className="mt-1 font-bold">{formatDateTime(reservation.end_time)}</p></div>
-              <div><p className="text-xs font-bold uppercase tracking-wider text-neutral-400">Vehículo</p><p className="mt-1 font-bold">{VEHICLE_LABELS[reservation.vehicle_type] ?? reservation.vehicle_type} · <span className="font-mono">{reservation.vehicle_plate}</span></p></div>
-              <div><p className="text-xs font-bold uppercase tracking-wider text-neutral-400">Total</p><p className="mt-1 text-xl font-black">{formatCurrency(reservation.total_price)}</p></div>
+              <div><p className="text-xs font-bold uppercase tracking-wider text-neutral-600">Llegada</p><p className="mt-1 font-bold text-neutral-900">{formatDateTime(reservation.start_time)}</p></div>
+              <div><p className="text-xs font-bold uppercase tracking-wider text-neutral-600">Salida</p><p className="mt-1 font-bold text-neutral-900">{formatDateTime(reservation.end_time)}</p></div>
+              <div><p className="text-xs font-bold uppercase tracking-wider text-neutral-600">Vehículo</p><p className="mt-1 font-bold text-neutral-900">{VEHICLE_LABELS[reservation.vehicle_type] ?? reservation.vehicle_type} · <span className="font-mono">{reservation.vehicle_plate}</span></p></div>
+              <div><p className="text-xs font-bold uppercase tracking-wider text-neutral-600">Total</p><p className="mt-1 text-xl font-black text-neutral-900">{formatCurrency(reservation.total_price)}</p></div>
             </div>
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">

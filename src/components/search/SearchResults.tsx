@@ -25,11 +25,13 @@ export default function SearchResults({
   destination,
   start,
   end,
+  isExpanded = false,
 }: {
   lots: NearbyLot[];
   destination: { lat: number; lng: number; address: string };
   start: string;
   end: string;
+  isExpanded?: boolean;
 }) {
   const [sort, setSort] = useState<SortOption>("distance");
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
@@ -50,6 +52,11 @@ export default function SearchResults({
 
   return (
     <div className="mt-5">
+      {isExpanded && filteredLots.length > 0 && (
+        <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
+          No hay parqueaderos muy cerca de tu destino. Te mostramos las opciones disponibles más cercanas, aunque estén lejos.
+        </div>
+      )}
       <div className="mb-4 flex flex-col gap-3 rounded-2xl border border-neutral-200 bg-white p-3 shadow-sm lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0">
           <span className="shrink-0 text-sm font-semibold text-neutral-500">Servicios</span>
@@ -177,7 +184,7 @@ export default function SearchResults({
                   className={`mt-4 block rounded-xl px-4 py-2.5 text-center text-sm font-bold transition ${
                     lot.available_spots > 0
                       ? "bg-blue-600 text-white hover:bg-blue-700"
-                      : "pointer-events-none bg-neutral-100 text-neutral-400"
+                      : "pointer-events-none bg-neutral-100 text-neutral-500"
                   }`}
                 >
                   {lot.available_spots > 0 ? "Ver y reservar" : "No disponible"}

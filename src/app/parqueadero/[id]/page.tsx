@@ -57,7 +57,7 @@ export default async function ParkingLotPage({
               <div className="relative flex h-full max-w-xl flex-col justify-end">
                 <span className="w-fit rounded-full bg-white/15 px-3 py-1 text-xs font-bold backdrop-blur">{schedule}</span>
                 <p className="mt-6 text-xl font-bold">Un lugar seguro cerca de tu destino.</p>
-                <p className="mt-2 text-sm text-blue-100">{lot.description || "Reserva tu cupo con anticipación y llega sin dar vueltas."}</p>
+                <p className="mt-2 text-sm text-blue-50">{lot.description || "Reserva tu cupo con anticipación y llega sin dar vueltas."}</p>
               </div>
             </div>
 

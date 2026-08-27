@@ -164,7 +164,7 @@ export default function BookingForm({
         <span className="text-sm font-medium text-neutral-500">Total estimado</span>
         <span className="text-2xl font-black text-neutral-900">{formatCurrency(price)}</span>
       </div>
-      {lot.price_per_day !== null && <p className="mt-1 text-right text-xs text-neutral-400">Tarifa diaria desde {formatCurrency(lot.price_per_day)}</p>}
+      {lot.price_per_day !== null && <p className="mt-1 text-right text-xs text-neutral-500">Tarifa diaria desde {formatCurrency(lot.price_per_day)}</p>}
       {error && <p className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-sm font-medium text-red-700">{error}</p>}
       <button
         type="button"
@@ -174,7 +174,7 @@ export default function BookingForm({
       >
         {isPending ? "Confirmando…" : !isAuthenticated ? "Ingresar para reservar" : availableSpots <= 0 && rangeMatches ? "Sin disponibilidad" : "Reservar ahora"}
       </button>
-      <p className="mt-3 text-center text-xs text-neutral-400">Verificaremos el cupo nuevamente antes de confirmar.</p>
+      <p className="mt-3 text-center text-xs text-neutral-500">Verificaremos el cupo nuevamente antes de confirmar.</p>
     </div>
   );
 }
