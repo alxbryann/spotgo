@@ -17,11 +17,10 @@ export default function SearchBox() {
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     if (query.trim().length < 3) {
-      setResults([]);
       return;
     }
-    setLoading(true);
     debounceRef.current = setTimeout(async () => {
+      setLoading(true);
       try {
         const res = await fetch(`/api/geocode?q=${encodeURIComponent(query)}`);
         const data = await res.json();
@@ -99,7 +98,7 @@ export default function SearchBox() {
 
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
 
-      {(results.length > 0 || loading) && (
+      {query.trim().length >= 3 && (results.length > 0 || loading) && (
         <div className="absolute z-10 mt-2 w-full overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-xl">
           {loading && <div className="px-4 py-3 text-sm text-neutral-500">Buscando…</div>}
           {!loading &&
