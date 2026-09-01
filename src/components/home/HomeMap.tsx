@@ -32,14 +32,21 @@ export default function HomeMap({ lots = [] }: { lots?: HomeMapLot[] }) {
       <AttributionControl position="bottom-right" compact />
       {lots.map((lot) => (
         <Marker key={lot.id} longitude={lot.lng} latitude={lot.lat} anchor="bottom">
-          <Link
-            href={`/parqueadero/${lot.id}`}
-            className="spotgo-map-pin"
-            aria-label={`${lot.name}, $${lot.price_per_hour.toLocaleString("es-CO")} por hora`}
-            title={lot.name}
-          >
-            <span>P</span>
-          </Link>
+          <div className="group relative">
+            <Link
+              href={`/parqueadero/${lot.id}`}
+              className="spotgo-map-pin"
+              aria-label={`${lot.name}, $${lot.price_per_hour.toLocaleString("es-CO")} por hora`}
+            >
+              <span>P</span>
+            </Link>
+            <span
+              aria-hidden
+              className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-3 -translate-x-1/2 rounded-lg bg-slate-950 px-2.5 py-1 text-xs font-bold whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+            >
+              {lot.name}
+            </span>
+          </div>
         </Marker>
       ))}
     </Map>

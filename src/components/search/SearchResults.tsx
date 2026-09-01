@@ -122,19 +122,27 @@ export default function SearchResults({
               </Marker>
               {filteredLots.map((lot) => (
                 <Marker key={lot.id} longitude={lot.lng} latitude={lot.lat} anchor="bottom">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedLot(lot.id);
-                      document.getElementById(`lot-${lot.id}`)?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                    }}
-                    className={`rounded-full border-2 border-white px-2.5 py-1 text-xs font-black shadow-lg transition hover:scale-110 ${
-                      selectedLot === lot.id ? "bg-neutral-900 text-white" : "bg-blue-600 text-white"
-                    }`}
-                    title={lot.name}
-                  >
-                    {formatCurrency(lot.price_per_hour).replace("COP", "").trim()}
-                  </button>
+                  <div className="group relative">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedLot(lot.id);
+                        document.getElementById(`lot-${lot.id}`)?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                      }}
+                      aria-label={lot.name}
+                      className={`rounded-full border-2 border-white px-2.5 py-1 text-xs font-black shadow-lg transition hover:scale-110 ${
+                        selectedLot === lot.id ? "bg-neutral-900 text-white" : "bg-blue-600 text-white"
+                      }`}
+                    >
+                      {formatCurrency(lot.price_per_hour).replace("COP", "").trim()}
+                    </button>
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-3 -translate-x-1/2 rounded-lg bg-slate-950 px-2.5 py-1 text-xs font-bold whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+                    >
+                      {lot.name}
+                    </span>
+                  </div>
                 </Marker>
               ))}
             </Map>
