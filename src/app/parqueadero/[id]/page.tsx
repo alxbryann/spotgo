@@ -24,10 +24,9 @@ export default async function ParkingLotPage({
   const [{ id }, query] = await Promise.all([params, searchParams]);
   const { start, end } = parseRange(query.start, query.end);
   const supabase = await createClient();
-  const [{ data: lotData }, { data: spotsData }, { data: authData }] = await Promise.all([
+  const [{ data: lotData }, { data: spotsData }] = await Promise.all([
     supabase.from("parking_lots").select("*").eq("id", id).eq("is_active", true).single(),
     supabase.rpc("get_available_spots", { p_lot_id: id, p_start: start, p_end: end }),
-    supabase.auth.getUser(),
   ]);
   const lot = lotData as ParkingLot | null;
   if (!lot) notFound();
@@ -90,7 +89,6 @@ export default async function ParkingLotPage({
             initialStart={start}
             initialEnd={end}
             availableSpots={getAvailableSpots(spotsData)}
-            isAuthenticated={Boolean(authData.user)}
           />
         </div>
       </div>

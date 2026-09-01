@@ -22,5 +22,15 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), sans-serif;
+}
+
+.spotgo-map-pin { display:grid; width:44px; height:44px; place-items:center; border:3px solid #fff; border-radius:50% 50% 50% 0; transform:rotate(-45deg); background:#020617; color:#fff; font-size:14px; font-weight:900; box-shadow:0 4px 6px rgba(15,23,42,.28); transition:transform 150ms ease-out, background-color 150ms ease-out; }
+.spotgo-map-pin > span { transform:rotate(45deg); }
+.spotgo-map-pin:hover { transform:rotate(-45deg) scale(1.08); background:#3f6212; }
+.spotgo-map-pin:focus-visible { outline:3px solid #fff; outline-offset:3px; }
+.maplibregl-ctrl-bottom-right { margin: 0 16px 18px 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
 }

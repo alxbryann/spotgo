@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import CancelReservationButton from "@/components/reservations/CancelReservationButton";
 import { formatCurrency, formatDateTime, getDefaultRange } from "@/lib/booking";
 import type { ReservationWithLot } from "@/lib/database.types";
 import { VEHICLE_LABELS } from "@/lib/database.types";
+import { type GuestReservationRow, toReservationWithLot } from "@/lib/guest-reservations";
+import { readGuestToken } from "@/lib/guest-session";
 import { createClient } from "@/lib/supabase/server";
 
 const STATUS_LABELS = {
@@ -40,18 +41,12 @@ function ReservationCard({ reservation }: { reservation: ReservationWithLot }) {
 }
 
 export default async function ReservationsPage() {
+  const guestToken = await readGuestToken();
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect(`/login?returnTo=${encodeURIComponent("/reservas")}`);
-
-  const { data } = await supabase
-    .from("reservations")
-    .select("*, parking_lots(id,name,address,lat,lng,image_url)")
-    .eq("user_id", user.id)
-    .order("start_time", { ascending: false });
-  const reservations = (data ?? []) as ReservationWithLot[];
+  const { data } = guestToken
+    ? await supabase.rpc("list_guest_reservations", { p_guest_token: guestToken })
+    : { data: [] };
+  const reservations = ((data ?? []) as GuestReservationRow[]).map(toReservationWithLot);
   const now = new Date(getDefaultRange().start).getTime();
   const upcoming = reservations
     .filter((reservation) => (reservation.status === "confirmed" && new Date(reservation.end_time).getTime() >= now) || reservation.status === "active")
@@ -63,7 +58,7 @@ export default async function ReservationsPage() {
       <div className="mx-auto max-w-4xl">
         <p className="text-sm font-black text-blue-600">TU HISTORIAL</p>
         <h1 className="mt-1 text-3xl font-black tracking-tight text-neutral-900">Mis reservas</h1>
-        <p className="mt-2 text-neutral-500">Todo lo que necesitas para tus próximas llegadas.</p>
+        <p className="mt-2 text-neutral-500">Reservas guardadas de forma privada en este navegador.</p>
 
         {reservations.length === 0 ? (
           <div className="mt-8 rounded-3xl border border-dashed border-neutral-300 bg-white px-6 py-16 text-center">

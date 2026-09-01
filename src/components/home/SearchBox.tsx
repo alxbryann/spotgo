@@ -10,6 +10,7 @@ export default function SearchBox() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<GeocodeResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
   const [locating, setLocating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -25,6 +26,7 @@ export default function SearchBox() {
         const res = await fetch(`/api/geocode?q=${encodeURIComponent(query)}`);
         const data = await res.json();
         setResults(data.results ?? []);
+        setSearched(true);
       } finally {
         setLoading(false);
       }
@@ -65,10 +67,11 @@ export default function SearchBox() {
   }
 
   return (
-    <div className="relative w-full max-w-xl">
-      <div className="flex items-center gap-2 rounded-2xl border border-neutral-200 bg-white p-2 shadow-lg shadow-neutral-900/5">
+    <div id="buscar" className="relative w-full max-w-xl scroll-mt-5">
+      <label htmlFor="spotgo-destination" className="sr-only">¿A dónde vas?</label>
+      <div className="flex min-h-14 items-center gap-2 rounded-2xl border border-slate-300 bg-white p-1.5 shadow-sm focus-within:border-lime-700 focus-within:ring-2 focus-within:ring-lime-700/20">
         <svg
-          className="ml-2 h-5 w-5 shrink-0 text-neutral-400"
+          className="ml-2 size-5 shrink-0 text-slate-600"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -82,31 +85,45 @@ export default function SearchBox() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
         <input
+          id="spotgo-destination"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="¿A dónde vas? Escribe una dirección o lugar..."
-          className="min-w-0 flex-1 border-none py-3 text-base outline-none placeholder:text-neutral-400"
+          onChange={(e) => {
+            const value = e.target.value;
+            setQuery(value);
+            if (value.trim().length < 3) {
+              setSearched(false);
+              setResults([]);
+            }
+          }}
+          placeholder="¿A dónde vas?"
+          autoComplete="street-address"
+          className="min-w-0 flex-1 border-none bg-transparent py-3 text-base font-medium text-slate-950 outline-none placeholder:text-slate-500"
         />
         <button
+          type="button"
           onClick={useMyLocation}
           disabled={locating}
-          className="shrink-0 rounded-xl bg-blue-50 px-3 py-2.5 text-sm font-semibold text-blue-600 hover:bg-blue-100 disabled:opacity-50"
+          aria-label={locating ? "Obteniendo tu ubicación" : "Usar mi ubicación"}
+          className="flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-slate-950 px-3 text-sm font-bold text-white transition-colors hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950 disabled:opacity-50"
         >
-          {locating ? "Ubicando…" : "Mi ubicación"}
+          <svg className="size-5 sm:mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="3" strokeWidth="2"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3" strokeWidth="2" strokeLinecap="round"/></svg>
+          <span className="hidden sm:inline">{locating ? "Ubicando…" : "Mi ubicación"}</span>
         </button>
       </div>
 
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      {error && <p role="alert" className="mt-2 text-sm font-medium text-red-700">{error}</p>}
 
-      {query.trim().length >= 3 && (results.length > 0 || loading) && (
-        <div className="absolute z-10 mt-2 w-full overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-xl">
-          {loading && <div className="px-4 py-3 text-sm text-neutral-500">Buscando…</div>}
+      {query.trim().length >= 3 && (results.length > 0 || loading || searched) && (
+        <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+          {loading && <div role="status" className="px-4 py-3 text-sm font-medium text-slate-600">Buscando lugares…</div>}
+          {!loading && searched && results.length === 0 && <div role="status" className="px-4 py-4 text-sm text-slate-700">No encontramos ese lugar. Prueba con una dirección más específica.</div>}
           {!loading &&
             results.map((r, i) => (
               <button
+                type="button"
                 key={i}
                 onClick={() => goTo(r)}
-                className="block w-full border-b border-neutral-100 px-4 py-3 text-left text-sm last:border-none hover:bg-neutral-50"
+                className="block min-h-11 w-full border-b border-slate-100 px-4 py-3 text-left text-sm font-medium text-slate-800 last:border-none hover:bg-slate-50 focus-visible:bg-slate-50 focus-visible:outline-none"
               >
                 {r.label}
               </button>

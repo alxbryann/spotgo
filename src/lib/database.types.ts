@@ -43,7 +43,7 @@ export type ReservationStatus = "confirmed" | "active" | "completed" | "cancelle
 
 export type Reservation = {
   id: string;
-  user_id: string;
+  user_id: string | null;
   parking_lot_id: string;
   vehicle_plate: string;
   vehicle_type: string;

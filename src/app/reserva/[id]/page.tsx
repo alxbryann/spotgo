@@ -1,28 +1,51 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import Image from "next/image";
+import { headers } from "next/headers";
+import { notFound } from "next/navigation";
+import QRCode from "qrcode";
 import CancelReservationButton from "@/components/reservations/CancelReservationButton";
 import { formatCurrency, formatDateTime } from "@/lib/booking";
-import type { ReservationWithLot } from "@/lib/database.types";
 import { VEHICLE_LABELS } from "@/lib/database.types";
+import { type GuestReservationRow, toReservationWithLot } from "@/lib/guest-reservations";
+import { readGuestToken } from "@/lib/guest-session";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function ReservationPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect(`/login?returnTo=${encodeURIComponent(`/reserva/${id}`)}`);
+  const guestToken = await readGuestToken();
+  if (!guestToken) notFound();
 
-  const { data } = await supabase
-    .from("reservations")
-    .select("*, parking_lots(id,name,address,lat,lng,image_url)")
-    .eq("id", id)
-    .eq("user_id", user.id)
-    .single();
-  const reservation = data as ReservationWithLot | null;
-  if (!reservation) notFound();
+  const supabase = await createClient();
+  const { data } = await supabase.rpc("get_guest_reservation", {
+    p_id: id,
+    p_guest_token: guestToken,
+  });
+  const row = Array.isArray(data) ? data[0] as GuestReservationRow | undefined : undefined;
+  if (!row) notFound();
+  const reservation = toReservationWithLot(row);
+  const { data: ticketToken } = await supabase.rpc("get_guest_ticket_token", {
+    p_id: id,
+    p_guest_token: guestToken,
+  });
+  if (typeof ticketToken !== "string") notFound();
   const canCancel = reservation.status === "confirmed" && new Date(reservation.start_time) > new Date();
+  const routeParams = new URLSearchParams({
+    lat: String(reservation.parking_lots.lat),
+    lng: String(reservation.parking_lots.lng),
+    name: reservation.parking_lots.name,
+    address: reservation.parking_lots.address,
+  });
+  const routePath = `/ruta?${routeParams}`;
+  const ticketPath = `/ticket/${ticketToken}`;
+  const requestHeaders = await headers();
+  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3001";
+  const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
+  const qrDataUrl = await QRCode.toDataURL(`${protocol}://${host}${ticketPath}`, {
+    width: 220,
+    margin: 1,
+    color: { dark: "#020617", light: "#ffffff" },
+    errorCorrectionLevel: "M",
+  });
 
   return (
     <main className="min-h-screen bg-neutral-50 px-4 py-10">
@@ -46,8 +69,17 @@ export default async function ReservationPage({ params }: { params: Promise<{ id
               <div><p className="text-xs font-bold uppercase tracking-wider text-neutral-600">Total</p><p className="mt-1 text-xl font-black text-neutral-900">{formatCurrency(reservation.total_price)}</p></div>
             </div>
 
+            <div className="mt-6 flex flex-col items-center gap-5 rounded-2xl border border-slate-200 bg-white p-5 sm:flex-row sm:text-left">
+              <Image src={qrDataUrl} alt="Código QR de la reserva" width={150} height={150} unoptimized className="size-[150px] rounded-xl" />
+              <div className="text-center sm:text-left">
+                <p className="text-lg font-black text-slate-950">QR de tu reserva</p>
+                <p className="mt-1 text-sm leading-6 text-slate-600">Preséntalo al llegar. Al escanearlo abre el ticket verificable de SpotGo.</p>
+                <Link href={ticketPath} className="mt-3 inline-flex min-h-11 items-center rounded-xl bg-lime-700 px-4 text-sm font-extrabold text-white hover:bg-lime-800">Ver ticket</Link>
+              </div>
+            </div>
+
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <a href={`https://www.google.com/maps/dir/?api=1&destination=${reservation.parking_lots.lat},${reservation.parking_lots.lng}`} target="_blank" rel="noreferrer" className="rounded-xl bg-neutral-900 px-5 py-3 text-center text-sm font-black text-white hover:bg-neutral-700">Cómo llegar ↗</a>
+              <Link href={routePath} className="rounded-xl bg-neutral-900 px-5 py-3 text-center text-sm font-black text-white hover:bg-neutral-700">Cómo llegar</Link>
               <Link href="/reservas" className="rounded-xl border border-neutral-200 px-5 py-3 text-center text-sm font-black text-neutral-700 hover:bg-neutral-50">Ver mis reservas</Link>
               {canCancel && <CancelReservationButton reservationId={reservation.id} />}
             </div>

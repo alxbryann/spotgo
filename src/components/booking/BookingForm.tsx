@@ -37,13 +37,11 @@ export default function BookingForm({
   initialStart,
   initialEnd,
   availableSpots,
-  isAuthenticated,
 }: {
   lot: ParkingLot;
   initialStart: string;
   initialEnd: string;
   availableSpots: number;
-  isAuthenticated: boolean;
 }) {
   const router = useRouter();
   const [start, setStart] = useState(toLocalInput(initialStart));
@@ -86,11 +84,6 @@ export default function BookingForm({
   }
 
   function submit() {
-    if (!isAuthenticated) {
-      const returnTo = `/parqueadero/${lot.id}?start=${encodeURIComponent(startIso)}&end=${encodeURIComponent(endIso)}`;
-      router.push(`/login?returnTo=${encodeURIComponent(returnTo)}`);
-      return;
-    }
     if (validationError) {
       setError(validationError);
       return;
@@ -172,9 +165,9 @@ export default function BookingForm({
         disabled={isPending || (rangeMatches && availableSpots <= 0)}
         className="mt-4 w-full rounded-xl bg-blue-600 px-5 py-3.5 font-black text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-neutral-300"
       >
-        {isPending ? "Confirmando…" : !isAuthenticated ? "Ingresar para reservar" : availableSpots <= 0 && rangeMatches ? "Sin disponibilidad" : "Reservar ahora"}
+        {isPending ? "Confirmando…" : availableSpots <= 0 && rangeMatches ? "Sin disponibilidad" : "Reservar ahora"}
       </button>
-      <p className="mt-3 text-center text-xs text-neutral-500">Verificaremos el cupo nuevamente antes de confirmar.</p>
+      <p className="mt-3 text-center text-xs text-neutral-500">Sin registro. Guardaremos esta reserva en este navegador.</p>
     </div>
   );
 }
