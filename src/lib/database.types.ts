@@ -17,7 +17,11 @@ export type ParkingLot = {
   image_url: string | null;
   is_active: boolean;
   created_at: string;
+  company_id?: string | null;
 };
+export type Company = { id: string; name: string; nit: string | null; contact_email: string; contact_phone: string | null; created_at: string };
+export type CompanyMember = { company_id: string; user_id: string; role: "owner" | "staff" };
+export type ParkingSpot = { id: string; parking_lot_id: string; code: string; vehicle_type: string; is_active: boolean };
 
 export type NearbyLot = {
   id: string;
@@ -54,6 +58,9 @@ export type Reservation = {
   confirmation_code: string;
   created_at: string;
   cancelled_at: string | null;
+  parking_spot_id?: string | null;
+  checked_in_at?: string | null;
+  checked_out_at?: string | null;
 };
 
 export type ReservationWithLot = Reservation & {

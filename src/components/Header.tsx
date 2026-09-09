@@ -17,6 +17,7 @@ export default function Header() {
           <Link href="/reservas" className="flex min-h-11 items-center rounded-xl border border-slate-300 px-3 text-slate-800 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950 sm:px-4">
             Mis reservas
           </Link>
+          <Link href="/dashboard" className="hidden min-h-11 items-center text-lime-700 hover:text-lime-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950 md:flex">Soy un parqueadero</Link>
         </nav>
       </div>
     </header>
