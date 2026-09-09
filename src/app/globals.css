@@ -1,36 +1,313 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   SpotGo Design System — tokens
+   Fuente: ~/Desktop/SpotGo Design System/tokens/*.css
+   Concepto: asfalto + señalética. Un solo acento de acción (lima), azul de
+   señalización para wayfinding y datos en vivo, neutrales fríos de asfalto.
+   ========================================================================== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* --- Neutrales: asfalto frío --- */
+  --gray-0: #ffffff;
+  --gray-25: #fafbfc;
+  --gray-50: #f4f6f8;
+  --gray-100: #e9edf1;
+  --gray-200: #d9dfe6;
+  --gray-300: #bfc8d2;
+  --gray-400: #97a3b0;
+  --gray-500: #6b7885;
+  --gray-600: #4b5764;
+  --gray-700: #333d48;
+  --gray-800: #1f2731;
+  --gray-900: #141a21;
+  --gray-950: #0b0f14;
+
+  /* --- Marca: Go Lime (acción primaria) --- */
+  --lime-100: #f1fbd4;
+  --lime-200: #e2f7a6;
+  --lime-300: #d3f477;
+  --lime-400: #c8f751;
+  --lime-500: #b4e52f;
+  --lime-600: #93c013;
+  --lime-700: #6e8f0e;
+
+  /* --- Marca: Signal Blue (wayfinding, enlaces, datos en vivo) --- */
+  --blue-100: #e4ebff;
+  --blue-200: #c7d5ff;
+  --blue-300: #9fb4ff;
+  --blue-500: #2f5bff;
+  --blue-600: #1f45d8;
+  --blue-700: #1734a6;
+
+  /* --- Estado --- */
+  --green-100: #e3f8ef;
+  --green-500: #14b87a;
+  --green-700: #0c7a51;
+  --amber-100: #fef3df;
+  --amber-500: #f5a524;
+  --amber-700: #a76a05;
+  --red-100: #fdecec;
+  --red-500: #e5484d;
+  --red-700: #a62126;
+
+  /* --- Semántica: superficies --- */
+  --surface-page: var(--gray-50);
+  --surface-card: var(--gray-0);
+  --surface-sunken: var(--gray-100);
+  --surface-inverse: var(--gray-950);
+  --surface-inverse-soft: var(--gray-800);
+  --surface-brand: var(--lime-400);
+  --surface-brand-soft: var(--lime-100);
+  --surface-accent-soft: var(--blue-100);
+  --surface-overlay: rgba(11, 15, 20, 0.55);
+
+  /* --- Semántica: texto --- */
+  --text-strong: var(--gray-950);
+  --text-body: var(--gray-700);
+  --text-muted: var(--gray-500);
+  --text-faint: var(--gray-400);
+  --text-on-brand: var(--gray-950);
+  --text-on-inverse: var(--gray-0);
+  --text-link: var(--blue-600);
+  --text-link-hover: var(--blue-700);
+
+  /* --- Semántica: bordes --- */
+  --border-subtle: var(--gray-100);
+  --border-default: var(--gray-200);
+  --border-strong: var(--gray-300);
+  --border-inverse: rgba(255, 255, 255, 0.14);
+  --border-focus: var(--blue-500);
+
+  /* --- Semántica: disponibilidad (dominio) --- */
+  --spot-free: var(--green-500);
+  --spot-free-soft: var(--green-100);
+  --spot-filling: var(--amber-500);
+  --spot-filling-soft: var(--amber-100);
+  --spot-full: var(--red-500);
+  --spot-full-soft: var(--red-100);
+  --spot-reserved: var(--blue-500);
+  --spot-reserved-soft: var(--blue-100);
+
+  /* --- Tipografía --- */
+  --font-display: var(--font-bricolage), "Manrope", system-ui, sans-serif;
+  --font-sans: var(--font-manrope), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+
+  --text-display-1: 800 56px/1.02 var(--font-display);
+  --text-display-2: 800 42px/1.06 var(--font-display);
+  --text-h1: 700 32px/1.14 var(--font-display);
+  --text-h2: 700 24px/1.2 var(--font-display);
+  --text-h3: 700 19px/1.3 var(--font-sans);
+  --text-body-lg: 500 17px/1.55 var(--font-sans);
+  --text-body-base: 500 15px/1.55 var(--font-sans);
+  --text-body-sm: 500 13px/1.5 var(--font-sans);
+  --text-label: 700 13px/1.2 var(--font-sans);
+  --text-caption: 600 11px/1.3 var(--font-sans);
+  --text-mono: 500 13px/1.4 var(--font-mono);
+  --text-mono-lg: 700 20px/1.2 var(--font-mono);
+
+  --tracking-display: -0.03em;
+  --tracking-tight: -0.015em;
+  --tracking-caption: 0.08em;
+
+  /* --- Layout --- */
+  --gutter-app: 24px;
+  --gutter-page: 32px;
+  --max-content: 1200px;
+  --sidebar-w: 248px;
+  --topbar-h: 64px;
+
+  /* --- Formas --- */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-pill: 999px;
+
+  /* --- Elevación: sombras frías en dos capas --- */
+  --shadow-xs: 0 1px 2px rgba(11, 15, 20, 0.06);
+  --shadow-sm: 0 1px 2px rgba(11, 15, 20, 0.05), 0 2px 6px rgba(11, 15, 20, 0.05);
+  --shadow-md: 0 2px 4px rgba(11, 15, 20, 0.04), 0 8px 20px rgba(11, 15, 20, 0.08);
+  --shadow-lg: 0 4px 8px rgba(11, 15, 20, 0.05), 0 20px 44px rgba(11, 15, 20, 0.12);
+  --shadow-focus: 0 0 0 3px rgba(47, 91, 255, 0.28);
+  --shadow-focus-brand: 0 0 0 3px rgba(180, 229, 47, 0.45);
+
+  /* --- Movimiento --- */
+  --ease-out: cubic-bezier(0.22, 0.9, 0.28, 1);
+  --ease-in-out: cubic-bezier(0.6, 0, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.5, 1);
+  --dur-instant: 90ms;
+  --dur-fast: 140ms;
+  --dur-base: 220ms;
+  --dur-slow: 380ms;
+  --press-scale: 0.975;
 }
 
+/* Puente a las utilidades de Tailwind v4 */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-gray-0: var(--gray-0);
+  --color-gray-25: var(--gray-25);
+  --color-gray-50: var(--gray-50);
+  --color-gray-100: var(--gray-100);
+  --color-gray-200: var(--gray-200);
+  --color-gray-300: var(--gray-300);
+  --color-gray-400: var(--gray-400);
+  --color-gray-500: var(--gray-500);
+  --color-gray-600: var(--gray-600);
+  --color-gray-700: var(--gray-700);
+  --color-gray-800: var(--gray-800);
+  --color-gray-900: var(--gray-900);
+  --color-gray-950: var(--gray-950);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-lime-100: var(--lime-100);
+  --color-lime-200: var(--lime-200);
+  --color-lime-300: var(--lime-300);
+  --color-lime-400: var(--lime-400);
+  --color-lime-500: var(--lime-500);
+  --color-lime-600: var(--lime-600);
+  --color-lime-700: var(--lime-700);
+
+  --color-blue-100: var(--blue-100);
+  --color-blue-200: var(--blue-200);
+  --color-blue-300: var(--blue-300);
+  --color-blue-500: var(--blue-500);
+  --color-blue-600: var(--blue-600);
+  --color-blue-700: var(--blue-700);
+
+  --color-green-100: var(--green-100);
+  --color-green-500: var(--green-500);
+  --color-green-700: var(--green-700);
+  --color-amber-100: var(--amber-100);
+  --color-amber-500: var(--amber-500);
+  --color-amber-700: var(--amber-700);
+  --color-red-100: var(--red-100);
+  --color-red-500: var(--red-500);
+  --color-red-700: var(--red-700);
+
+  --color-page: var(--surface-page);
+  --color-card: var(--surface-card);
+  --color-sunken: var(--surface-sunken);
+  --color-inverse: var(--surface-inverse);
+  --color-inverse-soft: var(--surface-inverse-soft);
+  --color-brand: var(--surface-brand);
+  --color-brand-soft: var(--surface-brand-soft);
+
+  --color-strong: var(--text-strong);
+  --color-body: var(--text-body);
+  --color-muted: var(--text-muted);
+  --color-faint: var(--text-faint);
+  --color-on-brand: var(--text-on-brand);
+  --color-on-inverse: var(--text-on-inverse);
+  --color-link: var(--text-link);
+
+  --color-subtle: var(--border-subtle);
+  --color-default: var(--border-default);
+
+  --color-spot-free: var(--spot-free);
+  --color-spot-free-soft: var(--spot-free-soft);
+  --color-spot-filling: var(--spot-filling);
+  --color-spot-filling-soft: var(--spot-filling-soft);
+  --color-spot-full: var(--spot-full);
+  --color-spot-full-soft: var(--spot-full-soft);
+  --color-spot-reserved: var(--spot-reserved);
+  --color-spot-reserved-soft: var(--spot-reserved-soft);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  --ease-out: var(--ease-out);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), sans-serif;
+  margin: 0;
+  font: var(--text-body-base);
+  color: var(--text-body);
+  background: var(--surface-page);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-.spotgo-map-pin { display:grid; width:44px; height:44px; place-items:center; border:3px solid #fff; border-radius:50% 50% 50% 0; transform:rotate(-45deg); background:#020617; color:#fff; font-size:14px; font-weight:900; box-shadow:0 4px 6px rgba(15,23,42,.28); transition:transform 150ms ease-out, background-color 150ms ease-out; }
-.spotgo-map-pin > span { transform:rotate(45deg); }
-.spotgo-map-pin:hover { transform:rotate(-45deg) scale(1.08); background:#3f6212; }
-.spotgo-map-pin:focus-visible { outline:3px solid #fff; outline-offset:3px; }
-.maplibregl-ctrl-bottom-right { margin: 0 16px 18px 0; }
+::selection {
+  background: var(--lime-300);
+  color: var(--gray-950);
+}
+
+/* Microetiqueta: encabezados de KPI y de tabla. 11px/700 uppercase +8% */
+.ds-caption {
+  font: var(--text-caption);
+  letter-spacing: var(--tracking-caption);
+  text-transform: uppercase;
+}
+
+/* Titulares display con el tracking de marca */
+.ds-display {
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-display);
+}
+
+/* Pin de mapa: pill con punto de disponibilidad (readme, sección Imágenes) */
+.spotgo-map-pin {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-inverse);
+  color: var(--gray-0);
+  font: var(--text-mono);
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--dur-base) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
+}
+.spotgo-map-pin::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--pin-dot, var(--spot-free));
+  flex: 0 0 auto;
+}
+.spotgo-map-pin:hover {
+  transform: translateY(-2px);
+  background: var(--gray-800);
+}
+.spotgo-map-pin:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 3px;
+}
+.spotgo-map-pin[data-selected="true"] {
+  background: var(--surface-brand);
+  color: var(--text-on-brand);
+}
+
+.maplibregl-ctrl-bottom-right {
+  margin: 0 16px 18px 0;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

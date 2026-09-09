@@ -45,16 +45,23 @@ export default async function SearchPage({
   const isExpanded = lots.length > 0 && usedRadius > RADII_M[0];
 
   return (
-    <main className="min-h-screen bg-neutral-50 px-4 py-6 sm:py-8">
-      <div className="mx-auto max-w-7xl">
+    <main className="min-h-screen px-5 py-7 md:px-8">
+      <div className="mx-auto max-w-[var(--max-content)]">
         <div className="mb-5">
-          <p className="text-sm font-bold text-blue-600">CERCA DE TU DESTINO</p>
-          <h1 className="mt-1 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl">Parqueaderos en {address}</h1>
-          <p className="mt-2 text-neutral-500">Compara disponibilidad, distancia y precio en tiempo real.</p>
+          <p className="ds-caption text-muted">Cerca de tu destino</p>
+          <h1
+            className="ds-display mt-2 text-strong"
+            style={{ font: "var(--text-h1)", letterSpacing: "var(--tracking-display)" }}
+          >
+            Parqueaderos en {address}
+          </h1>
+          <p className="mt-2 text-[15px] text-muted">
+            Compara disponibilidad, distancia y precio en vivo.
+          </p>
         </div>
         <DateRangePicker start={start} end={end} />
         {error ? (
-          <div className="mt-5 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-700">
+          <div className="mt-5 rounded-[var(--radius-lg)] border border-red-500/30 bg-red-100 p-5 text-[15px] font-medium text-red-700">
             No pudimos cargar los parqueaderos. Intenta de nuevo en unos minutos.
           </div>
         ) : (

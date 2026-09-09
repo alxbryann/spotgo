@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Check, X } from "lucide-react";
 import { notFound } from "next/navigation";
 import { formatDateTime } from "@/lib/booking";
 import { VEHICLE_LABELS } from "@/lib/database.types";
@@ -33,27 +34,27 @@ export default async function TicketPage({ params }: { params: Promise<{ token: 
   const cancelled = ticket.status === "cancelled";
 
   return (
-    <main className="grid min-h-[calc(100dvh-65px)] place-items-center bg-slate-100 px-4 py-8">
-      <section className="w-full max-w-md overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
-        <div className={`px-6 py-8 text-center text-white ${cancelled ? "bg-slate-700" : "bg-lime-700"}`}>
-          <div className="mx-auto grid size-14 place-items-center rounded-full bg-white text-2xl font-black text-slate-950">{cancelled ? "×" : "✓"}</div>
-          <p className="mt-4 text-sm font-extrabold uppercase">{STATUS_LABELS[ticket.status]}</p>
-          <p className="mt-3 font-mono text-4xl font-black">{ticket.confirmation_code}</p>
+    <main className="grid min-h-[calc(100dvh-64px)] place-items-center px-5 py-8">
+      <section className="w-full max-w-md overflow-hidden rounded-[var(--radius-xl)] border border-subtle bg-card shadow-md">
+        <div className={`px-6 py-8 text-center text-on-inverse ${cancelled ? "bg-inverse-soft" : "bg-inverse"}`}>
+          <div className="mx-auto grid size-12 place-items-center rounded-full bg-white/10">{cancelled ? <X className="size-6" strokeWidth={2.5} aria-hidden /> : <Check className="size-6 text-lime-400" strokeWidth={2.5} aria-hidden />}</div>
+          <p className="ds-caption mt-4 text-white/60">{STATUS_LABELS[ticket.status]}</p>
+          <p className="mt-3 font-mono text-[36px] font-bold tracking-[0.16em]">{ticket.confirmation_code}</p>
         </div>
 
         <div className="p-6">
-          <p className="text-xs font-extrabold uppercase text-slate-600">Parqueadero</p>
-          <h1 className="mt-1 text-2xl font-black text-slate-950">{ticket.lot_name}</h1>
-          <p className="mt-1 text-sm text-slate-600">{ticket.lot_address}</p>
+          <p className="ds-caption text-muted">Parqueadero</p>
+          <h1 className="ds-display mt-1.5 text-strong" style={{ font: "var(--text-h2)", letterSpacing: "var(--tracking-display)" }}>{ticket.lot_name}</h1>
+          <p className="mt-1.5 text-[15px] text-muted">{ticket.lot_address}</p>
 
-          <dl className="mt-6 grid gap-4 rounded-2xl bg-slate-100 p-4 sm:grid-cols-2">
-            <div><dt className="text-xs font-bold uppercase text-slate-600">Llegada</dt><dd className="mt-1 font-bold text-slate-950">{formatDateTime(ticket.start_time)}</dd></div>
-            <div><dt className="text-xs font-bold uppercase text-slate-600">Salida</dt><dd className="mt-1 font-bold text-slate-950">{formatDateTime(ticket.end_time)}</dd></div>
-            <div className="sm:col-span-2"><dt className="text-xs font-bold uppercase text-slate-600">Vehículo</dt><dd className="mt-1 font-bold text-slate-950">{VEHICLE_LABELS[ticket.vehicle_type] ?? ticket.vehicle_type} · <span className="font-mono">{ticket.vehicle_plate}</span></dd></div>
+          <dl className="mt-6 grid gap-5 rounded-[var(--radius-lg)] bg-page p-5 sm:grid-cols-2">
+            <div><dt className="ds-caption text-muted">Llegada</dt><dd className="mt-1.5 font-mono text-[13px] font-bold text-strong">{formatDateTime(ticket.start_time)}</dd></div>
+            <div><dt className="ds-caption text-muted">Salida</dt><dd className="mt-1.5 font-mono text-[13px] font-bold text-strong">{formatDateTime(ticket.end_time)}</dd></div>
+            <div className="sm:col-span-2"><dt className="ds-caption text-muted">Vehículo</dt><dd className="mt-1.5 font-mono text-[13px] font-bold text-strong">{VEHICLE_LABELS[ticket.vehicle_type] ?? ticket.vehicle_type} · <span className="font-mono">{ticket.vehicle_plate}</span></dd></div>
           </dl>
 
-          <p className="mt-5 text-center text-sm font-semibold text-slate-700">Este ticket fue emitido por SpotGo.</p>
-          <Link href="/" className="mt-4 flex min-h-11 items-center justify-center rounded-xl border border-slate-300 font-bold text-slate-800 hover:bg-slate-100">Ir a SpotGo</Link>
+          <p className="mt-6 text-center text-[13px] text-muted">Este ticket fue emitido por SpotGo.</p>
+          <Link href="/" className="mt-4 flex h-11 items-center justify-center rounded-[var(--radius-md)] border border-default bg-card text-[15px] font-bold text-strong shadow-xs transition-[filter] duration-[var(--dur-fast)] hover:brightness-95">Ir a SpotGo</Link>
         </div>
       </section>
     </main>

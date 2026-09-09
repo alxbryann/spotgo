@@ -2,7 +2,11 @@ import SearchBox from "@/components/home/SearchBox";
 import HomeMap, { type HomeMapLot } from "@/components/home/HomeMap";
 import { createClient } from "@/lib/supabase/server";
 import type { ParkingLot } from "@/lib/database.types";
+import { Badge, buttonClass } from "@/components/ui";
+import { formatCurrency } from "@/lib/booking";
 import Link from "next/link";
+
+type HomeLot = Pick<ParkingLot, "id" | "name" | "lat" | "lng" | "price_per_hour" | "rating">;
 
 export default async function Home() {
   const supabase = await createClient();
@@ -11,56 +15,80 @@ export default async function Home() {
     .select("id,name,lat,lng,price_per_hour,rating")
     .eq("is_active", true)
     .limit(30);
-  const lots = (data ?? []) as Pick<ParkingLot, "id" | "name" | "lat" | "lng" | "price_per_hour" | "rating">[];
+  const lots = (data ?? []) as HomeLot[];
   const featuredLot = lots[0];
 
   return (
-    <div className="relative flex min-h-[calc(100dvh-65px)] flex-1 overflow-hidden bg-slate-200">
-      <div className="absolute inset-0"><HomeMap lots={lots as HomeMapLot[]} /></div>
+    <div className="relative flex min-h-[calc(100dvh-64px)] flex-1 overflow-hidden bg-sunken">
+      <div className="absolute inset-0">
+        <HomeMap lots={lots as HomeMapLot[]} />
+      </div>
 
-      <section className="pointer-events-none relative z-10 flex w-full flex-col p-3 pb-[max(.75rem,env(safe-area-inset-bottom))] sm:p-5 lg:w-[480px] lg:p-0">
-        <div className="pointer-events-auto rounded-3xl border border-slate-200 bg-white p-4 shadow-lg sm:p-5 lg:flex lg:flex-1 lg:flex-col lg:justify-center lg:rounded-none lg:border-y-0 lg:border-l-0 lg:p-10">
+      <section className="pointer-events-none relative z-10 flex w-full flex-col p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-5 lg:w-[480px] lg:p-0">
+        <div className="pointer-events-auto rounded-[var(--radius-xl)] border border-subtle bg-card p-5 shadow-lg sm:p-6 lg:flex lg:flex-1 lg:flex-col lg:justify-center lg:rounded-none lg:border-y-0 lg:border-l-0 lg:p-10">
           <div>
-            <p className="mb-2 text-xs font-extrabold uppercase text-lime-700">{lots.length} parqueaderos activos en Bogotá</p>
-            <h1 className="max-w-md text-balance text-3xl font-black leading-tight text-slate-950 lg:text-5xl">
+            <p className="ds-caption text-muted">
+              {lots.length} parqueaderos activos en Bogotá
+            </p>
+            <h1
+              className="ds-display mt-3 max-w-md text-balance text-strong"
+              style={{ font: "var(--text-display-2)", letterSpacing: "var(--tracking-display)" }}
+            >
               Parquea cerca. Llega tranquilo.
             </h1>
-            <p className="mt-3 hidden max-w-sm text-pretty text-base leading-6 text-slate-600 sm:block">
+            <p className="mt-3 hidden max-w-sm text-pretty text-[17px] leading-[1.55] text-muted sm:block">
               Compara cupos, distancia y precio antes de salir.
             </p>
           </div>
 
-          <div className="mt-4 lg:mt-8">
+          <div className="mt-6 lg:mt-8">
             <SearchBox />
           </div>
 
-          <div className="mt-4 flex items-center justify-between border-t border-slate-200 pt-4 lg:mt-8">
+          <div className="mt-6 flex items-center justify-between border-t border-subtle pt-5 lg:mt-8">
             <div>
-              <p className="text-xs font-bold uppercase text-slate-600">Disponibilidad en vivo</p>
-              <p className="mt-1 text-sm font-semibold text-slate-950">Actualizada desde Supabase</p>
+              <p className="ds-caption text-muted">Disponibilidad en vivo</p>
+              <p className="mt-1.5 text-[15px] font-bold text-strong">
+                Cupos actualizados al momento
+              </p>
             </div>
-            <span className="flex items-center gap-2 rounded-full bg-lime-100 px-3 py-2 text-xs font-extrabold text-lime-900">
-              <span className="size-2 rounded-full bg-lime-700" aria-hidden="true" /> Activo
-            </span>
+            <Badge tone="free" dot>
+              Activo
+            </Badge>
           </div>
         </div>
 
         {featuredLot && (
-          <article className="pointer-events-auto mt-auto rounded-3xl border border-slate-200 bg-white p-3 shadow-lg lg:absolute lg:bottom-6 lg:left-[504px] lg:w-[380px]">
-            <div className="flex items-center gap-3">
-              <div className="grid size-16 shrink-0 place-items-center rounded-2xl bg-slate-950 text-2xl font-black text-white" aria-hidden="true">P</div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-start justify-between gap-3">
-                  <h2 className="truncate text-base font-extrabold text-slate-950">{featuredLot.name}</h2>
-                  {featuredLot.rating && <span className="shrink-0 text-sm font-bold text-amber-700">★ {featuredLot.rating}</span>}
-                </div>
-                <p className="mt-1 text-sm font-medium text-slate-600">Desde <span className="tabular-nums font-extrabold text-slate-950">${featuredLot.price_per_hour.toLocaleString("es-CO")}</span> / hora</p>
-                <p className="mt-1 text-xs font-semibold text-lime-800">Disponible ahora</p>
+          <article className="pointer-events-auto mt-auto rounded-[var(--radius-lg)] border border-subtle bg-card p-4 shadow-lg lg:absolute lg:bottom-6 lg:left-[504px] lg:w-[380px]">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <h2
+                  className="truncate text-strong"
+                  style={{ font: "var(--text-h3)", letterSpacing: "var(--tracking-tight)" }}
+                >
+                  {featuredLot.name}
+                </h2>
+                <p className="mt-0.5 text-[13px] text-muted">Más cercano a tu vista</p>
               </div>
+              {featuredLot.rating && (
+                <span className="shrink-0 font-mono text-[13px] font-bold text-strong">
+                  {featuredLot.rating.toFixed(1)}
+                </span>
+              )}
             </div>
-            <Link href={`/parqueadero/${featuredLot.id}`} className="mt-3 flex min-h-11 items-center justify-center rounded-xl bg-slate-950 px-4 text-sm font-extrabold text-white transition-colors hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950">
-              Ver parqueadero
-            </Link>
+
+            <div className="mt-4 flex items-center justify-between gap-3">
+              <span className="font-mono text-[20px] font-bold text-strong">
+                {formatCurrency(featuredLot.price_per_hour)}
+                <span className="text-[13px] font-medium text-muted">/h</span>
+              </span>
+              <Link
+                href={`/parqueadero/${featuredLot.id}`}
+                className={buttonClass({ variant: "primary", size: "md" })}
+              >
+                Ver parqueadero
+              </Link>
+            </div>
           </article>
         )}
       </section>

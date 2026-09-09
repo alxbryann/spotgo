@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { Check, MapPin, SquareParking, Star } from "lucide-react";
 import BookingForm from "@/components/booking/BookingForm";
 import { parseRange } from "@/lib/booking";
 import type { ParkingLot } from "@/lib/database.types";
@@ -33,39 +34,62 @@ export default async function ParkingLotPage({
 
   const schedule = lot.is_24h
     ? "Abierto 24 horas"
-    : `${lot.opens_at?.slice(0, 5) ?? "—"} a ${lot.closes_at?.slice(0, 5) ?? "—"}`;
+    : `${lot.opens_at?.slice(0, 5) ?? "—"}–${lot.closes_at?.slice(0, 5) ?? "—"}`;
 
   return (
-    <main className="min-h-screen bg-neutral-50 px-4 py-8">
-      <div className="mx-auto max-w-6xl">
+    <main className="min-h-screen px-5 py-7 md:px-8">
+      <div className="mx-auto max-w-[var(--max-content)]">
         <div className="mb-6">
-          <p className="text-sm font-bold text-blue-600">PARQUEADERO VERIFICADO</p>
+          <p className="ds-caption text-muted">Parqueadero verificado</p>
           <div className="mt-2 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
-              <h1 className="text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl">{lot.name}</h1>
-              <p className="mt-2 text-neutral-500">📍 {lot.address}</p>
+              <h1
+                className="ds-display text-strong"
+                style={{ font: "var(--text-h1)", letterSpacing: "var(--tracking-display)" }}
+              >
+                {lot.name}
+              </h1>
+              <p className="mt-2 flex items-center gap-1.5 text-[15px] text-muted">
+                <MapPin className="size-4 shrink-0" strokeWidth={2} aria-hidden />
+                {lot.address}
+              </p>
             </div>
-            {lot.rating !== null && <div className="w-fit rounded-xl bg-amber-50 px-4 py-2 font-black text-amber-700">★ {lot.rating.toFixed(1)}</div>}
+            {lot.rating !== null && (
+              <span className="flex w-fit items-center gap-1.5 font-mono text-[20px] font-bold text-strong">
+                <Star className="size-4 fill-current" strokeWidth={2} aria-hidden />
+                {lot.rating.toFixed(1)}
+              </span>
+            )}
           </div>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_390px]">
           <div className="space-y-5">
-            <div className="relative min-h-64 overflow-hidden rounded-3xl bg-gradient-to-br from-blue-950 via-blue-700 to-sky-400 p-8 text-white shadow-lg">
-              <div className="absolute -right-12 -top-16 text-[220px] font-black leading-none text-white/10">P</div>
-              <div className="relative flex h-full max-w-xl flex-col justify-end">
-                <span className="w-fit rounded-full bg-white/15 px-3 py-1 text-xs font-bold backdrop-blur">{schedule}</span>
-                <p className="mt-6 text-xl font-bold">Un lugar seguro cerca de tu destino.</p>
-                <p className="mt-2 text-sm text-blue-50">{lot.description || "Reserva tu cupo con anticipación y llega sin dar vueltas."}</p>
+            {/* Placeholder declarado: aún no hay fotos reales de los parqueaderos. */}
+            <div className="flex min-h-64 flex-col justify-end rounded-[var(--radius-xl)] border border-subtle bg-sunken p-6">
+              <div className="flex items-center gap-2 text-faint">
+                <SquareParking className="size-5" strokeWidth={2} aria-hidden />
+                <span className="ds-caption">Foto pendiente de definir con el equipo</span>
               </div>
+              <p className="mt-5 text-[17px] leading-[1.55] text-body">
+                {lot.description || "Reserva tu cupo con anticipación y llega sin dar vueltas."}
+              </p>
             </div>
 
-            <section className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
-              <h2 className="text-xl font-black">Lo que ofrece este lugar</h2>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <section className="rounded-[var(--radius-lg)] border border-subtle bg-card p-6 shadow-sm">
+              <h2
+                className="ds-display text-strong"
+                style={{ font: "var(--text-h2)", letterSpacing: "var(--tracking-display)" }}
+              >
+                Lo que ofrece este lugar
+              </h2>
+              <div className="mt-4 grid gap-2 sm:grid-cols-2">
                 {lot.amenities.map((amenity) => (
-                  <div key={amenity} className="flex items-center gap-3 rounded-2xl bg-neutral-50 px-4 py-3 text-sm font-semibold text-neutral-700">
-                    <span className="grid h-8 w-8 place-items-center rounded-full bg-blue-100 text-blue-700">✓</span>
+                  <div
+                    key={amenity}
+                    className="flex items-center gap-2.5 rounded-[var(--radius-md)] bg-page px-4 py-3 text-[15px] font-medium text-body"
+                  >
+                    <Check className="size-4 shrink-0 text-spot-free" strokeWidth={2.5} aria-hidden />
                     {AMENITY_LABELS[amenity] ?? amenity}
                   </div>
                 ))}
@@ -73,13 +97,15 @@ export default async function ParkingLotPage({
             </section>
 
             <section className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
-                <p className="text-sm font-semibold text-neutral-500">Horario</p>
-                <p className="mt-2 text-lg font-black">{schedule}</p>
+              <div className="rounded-[var(--radius-lg)] border border-subtle bg-card p-5 shadow-xs">
+                <p className="ds-caption text-muted">Horario</p>
+                <p className="mt-2.5 font-mono text-[20px] font-bold text-strong">{schedule}</p>
               </div>
-              <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
-                <p className="text-sm font-semibold text-neutral-500">Vehículos admitidos</p>
-                <p className="mt-2 text-lg font-black">{lot.vehicle_types.map((type) => VEHICLE_LABELS[type] ?? type).join(" · ")}</p>
+              <div className="rounded-[var(--radius-lg)] border border-subtle bg-card p-5 shadow-xs">
+                <p className="ds-caption text-muted">Vehículos admitidos</p>
+                <p className="mt-2.5 text-[17px] font-bold text-strong">
+                  {lot.vehicle_types.map((type) => VEHICLE_LABELS[type] ?? type).join(" · ")}
+                </p>
               </div>
             </section>
           </div>

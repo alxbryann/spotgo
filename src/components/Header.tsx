@@ -1,25 +1,35 @@
 import Link from "next/link";
+import { Wordmark, buttonClass } from "@/components/ui";
+
+const links = [
+  { href: "/buscar", label: "Buscar" },
+  { href: "/reservas", label: "Mis reservas" },
+];
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5">
-        <Link href="/" className="flex min-h-11 items-center gap-2 text-xl font-black text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950">
-          <span className="flex size-9 items-center justify-center rounded-xl bg-slate-950 text-white">
-            P
-          </span>
-          <span>Spot<span className="text-lime-700">Go</span></span>
-        </Link>
-        <nav aria-label="Navegación principal" className="flex items-center gap-2 text-sm font-bold sm:gap-4">
-          <Link href="/buscar" className="hidden min-h-11 items-center text-slate-700 hover:text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950 sm:flex">
-            Buscar parqueadero
+    <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-6 border-b border-subtle bg-card px-5 md:px-8">
+      <Link
+        href="/"
+        className="flex items-center rounded-[var(--radius-sm)] focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)]"
+      >
+        <Wordmark size={22} />
+      </Link>
+      <nav aria-label="Navegación principal" className="flex items-center gap-1">
+        {links.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className="rounded-[var(--radius-pill)] px-3.5 py-2 text-[15px] font-bold text-muted transition-colors duration-[var(--dur-fast)] hover:bg-sunken hover:text-strong focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)] sm:px-4"
+          >
+            {link.label}
           </Link>
-          <Link href="/reservas" className="flex min-h-11 items-center rounded-xl border border-slate-300 px-3 text-slate-800 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950 sm:px-4">
-            Mis reservas
-          </Link>
-          <Link href="/dashboard" className="hidden min-h-11 items-center text-lime-700 hover:text-lime-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950 md:flex">Soy un parqueadero</Link>
-        </nav>
-      </div>
+        ))}
+      </nav>
+      <div className="flex-1" />
+      <Link href="/dashboard" className={`${buttonClass({ variant: "secondary", size: "sm" })} hidden sm:inline-flex`}>
+        Soy un parqueadero
+      </Link>
     </header>
   );
 }

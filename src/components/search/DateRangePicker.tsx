@@ -40,10 +40,10 @@ export default function DateRangePicker({ start, end }: { start: string; end: st
   }
 
   return (
-    <section className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
+    <section className="rounded-[var(--radius-lg)] border border-subtle bg-card p-4 shadow-xs">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600">Tu estadía</p>
+          <p className="ds-caption text-muted">Tu estadía</p>
           <div className="mt-2 flex flex-wrap gap-2">
             {QUICK_RANGES.map((range) => (
               <button
@@ -55,7 +55,7 @@ export default function DateRangePicker({ start, end }: { start: string; end: st
                   nextStart.setSeconds(0, 0);
                   updateRange(nextStart, new Date(nextStart.getTime() + range.hours * 3_600_000));
                 }}
-                className="rounded-full border border-neutral-200 px-3 py-2 text-sm font-semibold text-neutral-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 disabled:opacity-50"
+                className="rounded-[var(--radius-pill)] border border-default px-3.5 py-2 text-[13px] font-bold text-body transition-colors duration-[var(--dur-fast)] hover:bg-sunken hover:text-strong focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)] disabled:opacity-45"
               >
                 {range.label}
               </button>
@@ -63,35 +63,35 @@ export default function DateRangePicker({ start, end }: { start: string; end: st
           </div>
         </div>
         <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
-          <label className="text-sm font-medium text-neutral-700">
+          <label className="text-[13px] font-bold text-strong">
             Llegada
             <input
               type="datetime-local"
               value={startValue}
               onChange={(event) => setStartValue(event.target.value)}
-              className="mt-1 block w-full rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="mt-1.5 block h-11 w-full rounded-[var(--radius-md)] border border-default bg-card px-3.5 font-mono text-[13px] text-strong outline-none focus:border-[var(--border-focus)] focus:shadow-[var(--shadow-focus)]"
             />
           </label>
-          <label className="text-sm font-medium text-neutral-700">
+          <label className="text-[13px] font-bold text-strong">
             Salida
             <input
               type="datetime-local"
               value={endValue}
               onChange={(event) => setEndValue(event.target.value)}
-              className="mt-1 block w-full rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="mt-1.5 block h-11 w-full rounded-[var(--radius-md)] border border-default bg-card px-3.5 font-mono text-[13px] text-strong outline-none focus:border-[var(--border-focus)] focus:shadow-[var(--shadow-focus)]"
             />
           </label>
           <button
             type="button"
             disabled={isPending || !startValue || !endValue}
             onClick={() => updateRange(new Date(startValue), new Date(endValue))}
-            className="rounded-xl bg-neutral-900 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-blue-600 disabled:opacity-50"
+            className="h-11 rounded-[var(--radius-md)] bg-inverse px-5 text-[13px] font-bold text-on-inverse transition-[filter,transform] duration-[var(--dur-fast)] hover:brightness-95 active:scale-[var(--press-scale)] focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)] disabled:opacity-45"
           >
             {isPending ? "Actualizando…" : "Actualizar"}
           </button>
         </div>
       </div>
-      {error && <p className="mt-3 text-sm font-medium text-red-600">{error}</p>}
+      {error && <p role="alert" className="mt-3 text-[13px] font-medium text-red-700">{error}</p>}
     </section>
   );
 }

@@ -110,7 +110,7 @@ export default function RoutePlanner({
   }, [route]);
 
   return (
-    <div className="relative min-h-[calc(100dvh-65px)] overflow-hidden bg-slate-200">
+    <div className="relative min-h-[calc(100dvh-64px)] overflow-hidden bg-sunken">
       <div className="absolute inset-0">
         <Map
           ref={mapRef}
@@ -138,33 +138,33 @@ export default function RoutePlanner({
       </div>
 
       <div className="pointer-events-none relative z-10 flex min-h-[calc(100dvh-65px)] flex-col p-3 pb-[max(.75rem,env(safe-area-inset-bottom))]">
-        <div className="pointer-events-auto w-fit rounded-full bg-slate-950 px-4 py-2 text-sm font-bold text-white shadow-md">
+        <div className="pointer-events-auto w-fit rounded-[var(--radius-pill)] bg-inverse px-4 py-2 text-[13px] font-bold text-on-inverse shadow-md">
           Ruta en SpotGo
         </div>
 
-        <section className="pointer-events-auto mt-auto rounded-3xl border border-slate-200 bg-white p-5 shadow-xl sm:mx-auto sm:w-full sm:max-w-lg">
+        <section className="pointer-events-auto mt-auto rounded-[var(--radius-xl)] border border-subtle bg-card p-5 shadow-lg sm:mx-auto sm:w-full sm:max-w-lg">
           <div className="flex items-center justify-between gap-3">
             <p className="text-xs font-extrabold uppercase text-lime-700">Tu destino</p>
-            {origin && <span className="flex items-center gap-1.5 text-xs font-bold text-slate-600"><span className="size-2 rounded-full bg-blue-600" aria-hidden="true" /> Ubicación en vivo</span>}
+            {origin && <span className="ds-caption flex items-center gap-1.5 text-muted"><span className="size-2 rounded-full bg-blue-600" aria-hidden="true" /> Ubicación en vivo</span>}
           </div>
-          <h1 className="mt-1 text-balance text-xl font-black text-slate-950">{name}</h1>
-          <p className="mt-1 text-sm text-slate-600">{address}</p>
+          <h1 className="mt-1.5 text-balance text-strong" style={{ font: "var(--text-h3)", letterSpacing: "var(--tracking-tight)" }}>{name}</h1>
+          <p className="mt-1 text-[13px] text-muted">{address}</p>
 
           {route && (
-            <div className="mt-4 grid grid-cols-2 gap-3 rounded-2xl bg-slate-100 p-4">
-              <div><p className="text-xs font-bold uppercase text-slate-600">Llegas en</p><p className="mt-1 tabular-nums text-2xl font-black text-slate-950">{formatDuration(route.duration)}</p></div>
-              <div><p className="text-xs font-bold uppercase text-slate-600">Distancia</p><p className="mt-1 tabular-nums text-2xl font-black text-slate-950">{formatDistance(route.distance)}</p></div>
+            <div className="mt-4 grid grid-cols-2 gap-3 rounded-[var(--radius-lg)] bg-page p-4">
+              <div><p className="ds-caption text-muted">Llegas en</p><p className="mt-1.5 font-mono text-[20px] font-bold text-strong">{formatDuration(route.duration)}</p></div>
+              <div><p className="ds-caption text-muted">Distancia</p><p className="mt-1.5 font-mono text-[20px] font-bold text-strong">{formatDistance(route.distance)}</p></div>
             </div>
           )}
 
-          {loading && <p role="status" className="mt-4 text-sm font-semibold text-slate-700">Calculando la mejor ruta…</p>}
+          {loading && <p role="status" className="mt-4 text-[13px] font-medium text-muted">Calculando la mejor ruta…</p>}
           {error && <p role="alert" className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-sm font-semibold text-red-700">{error}</p>}
 
           <button
             type="button"
             onClick={locate}
             disabled={loading}
-            className="mt-4 min-h-12 w-full rounded-xl bg-slate-950 px-5 font-extrabold text-white transition-colors hover:bg-slate-800 disabled:opacity-50"
+            className="mt-4 flex h-12 w-full items-center justify-center rounded-[var(--radius-md)] bg-inverse px-[22px] text-[17px] font-bold text-on-inverse shadow-xs transition-[filter,transform] duration-[var(--dur-fast)] hover:brightness-95 active:scale-[var(--press-scale)] disabled:opacity-45"
           >
             {route ? "Actualizar desde mi ubicación" : "Usar mi ubicación"}
           </button>

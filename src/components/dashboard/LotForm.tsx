@@ -1,4 +1,164 @@
 "use client";
-import { useState } from "react"; import { saveLot, addSpots } from "@/app/actions/company";
-type Lot={id:string;name:string;address:string;lat:number;lng:number;price_per_hour:number;price_per_day:number|null;description:string|null;is_24h:boolean;opens_at:string|null;closes_at:string|null};
-export default function LotForm({lot}:{lot?:Lot}) { const [message,setMessage]=useState(""); async function submit(f:FormData){const r=await saveLot(Object.fromEntries(f));setMessage(r.error||"Cambios guardados.")} return <form action={submit} className="max-w-3xl space-y-4 rounded-3xl bg-white p-6 shadow-sm"><input name="id" type="hidden" defaultValue={lot?.id}/><div className="grid gap-4 sm:grid-cols-2">{[["Nombre","name",lot?.name],["Dirección","address",lot?.address],["Latitud","lat",lot?.lat??4.65],["Longitud","lng",lot?.lng??-74.08],["Tarifa por hora","price_per_hour",lot?.price_per_hour??5000],["Tarifa diaria","price_per_day",lot?.price_per_day??""]].map(([label,name,value])=><label key={String(name)} className="text-sm font-bold">{label}<input name={String(name)} required={name!=="price_per_day"} defaultValue={String(value)} className="mt-1 w-full rounded-xl border p-3"/></label>)}</div><label className="block text-sm font-bold">Descripción<textarea name="description" defaultValue={lot?.description||""} className="mt-1 w-full rounded-xl border p-3"/></label><label className="flex gap-2 text-sm font-bold"><input type="checkbox" name="is_24h" defaultChecked={lot?.is_24h}/> Abierto 24 horas</label><input name="opens_at" defaultValue={lot?.opens_at||"08:00"} type="time" className="rounded-xl border p-3"/><input name="closes_at" defaultValue={lot?.closes_at||"20:00"} type="time" className="rounded-xl border p-3"/><input name="is_active" type="hidden" value="true"/><button className="min-h-11 rounded-xl bg-lime-500 px-5 font-black">Guardar parqueadero</button>{lot&&<button formAction={async()=>{const count=Number(prompt("¿Cuántas plazas deseas añadir?","10"));if(count){const r=await addSpots(lot.id,count);setMessage(r.error||"Plazas añadidas.")}}} className="ml-2 min-h-11 rounded-xl border px-5 font-bold">Añadir plazas</button>}<p role="status" className="text-sm font-semibold">{message}</p></form> }
+
+import { useState } from "react";
+import { saveLot, addSpots } from "@/app/actions/company";
+import { Button, Field, inputClass } from "@/components/ui";
+
+type Lot = {
+  id: string;
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+  price_per_hour: number;
+  price_per_day: number | null;
+  description: string | null;
+  is_24h: boolean;
+  opens_at: string | null;
+  closes_at: string | null;
+};
+
+const FIELDS: { label: string; name: string; hint?: string; mono?: boolean }[] = [
+  { label: "Nombre", name: "name" },
+  { label: "Dirección", name: "address" },
+  { label: "Latitud", name: "lat", mono: true },
+  { label: "Longitud", name: "lng", mono: true },
+  { label: "Tarifa por hora", name: "price_per_hour", hint: "En pesos colombianos", mono: true },
+  { label: "Tarifa diaria", name: "price_per_day", hint: "Opcional", mono: true },
+];
+
+export default function LotForm({ lot }: { lot?: Lot }) {
+  const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
+  const [spotCount, setSpotCount] = useState(10);
+
+  const defaults: Record<string, string> = {
+    name: lot?.name ?? "",
+    address: lot?.address ?? "",
+    lat: String(lot?.lat ?? 4.65),
+    lng: String(lot?.lng ?? -74.08),
+    price_per_hour: String(lot?.price_per_hour ?? 5000),
+    price_per_day: lot?.price_per_day != null ? String(lot.price_per_day) : "",
+  };
+
+  async function submit(formData: FormData) {
+    const result = await saveLot(Object.fromEntries(formData));
+    setIsError(Boolean(result.error));
+    setMessage(result.error || "Cambios guardados.");
+  }
+
+  return (
+    <div className="max-w-3xl space-y-4">
+      <form
+        action={submit}
+        className="space-y-5 rounded-[var(--radius-lg)] border border-subtle bg-card p-6 shadow-sm"
+      >
+        <input name="id" type="hidden" defaultValue={lot?.id} />
+        <input name="is_active" type="hidden" value="true" />
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          {FIELDS.map((field) => (
+            <Field key={field.name} label={field.label} hint={field.hint}>
+              <input
+                name={field.name}
+                required={field.name !== "price_per_day"}
+                defaultValue={defaults[field.name]}
+                className={field.mono ? `font-mono ${inputClass}` : inputClass}
+              />
+            </Field>
+          ))}
+        </div>
+
+        <Field label="Descripción">
+          <textarea
+            name="description"
+            rows={3}
+            defaultValue={lot?.description || ""}
+            className="w-full rounded-[var(--radius-md)] border border-default bg-card p-3.5 text-[15px] text-strong outline-none transition-shadow focus:border-[var(--border-focus)] focus:shadow-[var(--shadow-focus)]"
+          />
+        </Field>
+
+        <label className="flex items-center gap-2.5 text-[13px] font-bold text-strong">
+          <input
+            type="checkbox"
+            name="is_24h"
+            defaultChecked={lot?.is_24h}
+            className="size-4 accent-[var(--lime-500)]"
+          />
+          Abierto 24 horas
+        </label>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Abre">
+            <input
+              name="opens_at"
+              type="time"
+              defaultValue={lot?.opens_at?.slice(0, 5) || "08:00"}
+              className={`font-mono ${inputClass}`}
+            />
+          </Field>
+          <Field label="Cierra">
+            <input
+              name="closes_at"
+              type="time"
+              defaultValue={lot?.closes_at?.slice(0, 5) || "20:00"}
+              className={`font-mono ${inputClass}`}
+            />
+          </Field>
+        </div>
+
+        <Button type="submit" size="lg">
+          Guardar parqueadero
+        </Button>
+      </form>
+
+      {lot && (
+        <div className="rounded-[var(--radius-lg)] border border-subtle bg-card p-6 shadow-sm">
+          <h2 className="ds-caption text-muted">Plazas</h2>
+          <p className="mt-2 text-[15px] text-muted">
+            Se crean con códigos correlativos a continuación de las existentes.
+          </p>
+          <div className="mt-4 flex flex-wrap items-end gap-3">
+            <Field label="Cuántas añadir">
+              <input
+                type="number"
+                min={1}
+                max={500}
+                value={spotCount}
+                onChange={(event) => setSpotCount(Number(event.target.value))}
+                className={`w-32 font-mono ${inputClass}`}
+              />
+            </Field>
+            <Button
+              variant="secondary"
+              size="lg"
+              onClick={async () => {
+                if (spotCount < 1) {
+                  setIsError(true);
+                  setMessage("Indica cuántas plazas añadir.");
+                  return;
+                }
+                const result = await addSpots(lot.id, spotCount);
+                setIsError(Boolean(result.error));
+                setMessage(result.error || `${spotCount} plazas añadidas.`);
+              }}
+            >
+              Añadir plazas
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {message && (
+        <p
+          role="status"
+          className={`rounded-[var(--radius-sm)] px-3 py-2 text-[13px] font-medium ${
+            isError ? "bg-red-100 text-red-700" : "bg-spot-free-soft text-green-700"
+          }`}
+        >
+          {message}
+        </p>
+      )}
+    </div>
+  );
+}

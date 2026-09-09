@@ -4,6 +4,7 @@ import Link from "next/link";
 import Map, { AttributionControl, GeolocateControl, Marker, NavigationControl } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { MAP_STYLE } from "@/lib/map-style";
+import { formatCurrency } from "@/lib/booking";
 
 const BOGOTA = { latitude: 4.6533, longitude: -74.0837, zoom: 13.3 };
 
@@ -36,13 +37,13 @@ export default function HomeMap({ lots = [] }: { lots?: HomeMapLot[] }) {
             <Link
               href={`/parqueadero/${lot.id}`}
               className="spotgo-map-pin"
-              aria-label={`${lot.name}, $${lot.price_per_hour.toLocaleString("es-CO")} por hora`}
+              aria-label={`${lot.name}, ${formatCurrency(lot.price_per_hour)} por hora`}
             >
-              <span>P</span>
+              {formatCurrency(lot.price_per_hour)}
             </Link>
             <span
               aria-hidden
-              className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-3 -translate-x-1/2 rounded-lg bg-slate-950 px-2.5 py-1 text-xs font-bold whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+              className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2.5 -translate-x-1/2 rounded-[var(--radius-sm)] bg-inverse px-2.5 py-1.5 text-[13px] font-bold whitespace-nowrap text-on-inverse opacity-0 shadow-lg transition-opacity duration-[var(--dur-fast)] group-hover:opacity-100 group-focus-within:opacity-100"
             >
               {lot.name}
             </span>
